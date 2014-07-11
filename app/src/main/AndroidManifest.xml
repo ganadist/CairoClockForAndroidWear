@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="ganachoco.wear.clockface.cairoclock" >
+
+    <uses-feature android:name="android.hardware.type.watch" />
+
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.PROVIDE_BACKGROUND" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@drawable/ic_launcher"
+        android:label="@string/app_name"
+        android:theme="@android:style/Theme.DeviceDefault.NoActionBar.Fullscreen" >
+        <activity
+            android:name=".AntiqueActivity"
+            android:label="@string/title_antique"
+            android:allowEmbedded="true" >
+            <meta-data
+                android:name="com.google.android.clockwork.home.preview"
+                android:resource="@drawable/preview_antique"/>
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="com.google.android.clockwork.home.category.HOME_BACKGROUND" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".DefaultActivity"
+            android:label="@string/title_default"
+            android:allowEmbedded="true" >
+            <meta-data
+                android:name="com.google.android.clockwork.home.preview"
+                android:resource="@drawable/preview_default"/>
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="com.google.android.clockwork.home.category.HOME_BACKGROUND" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".FdoActivity"
+            android:label="@string/title_fdo"
+            android:allowEmbedded="true" >
+            <meta-data
+                android:name="com.google.android.clockwork.home.preview"
+                android:resource="@drawable/preview_fdo"/>
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="com.google.android.clockwork.home.category.HOME_BACKGROUND" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".FunkyActivity"
+            android:label="@string/title_funky"
+            android:allowEmbedded="true" >
+            <meta-data
+                android:name="com.google.android.clockwork.home.preview"
+                android:resource="@drawable/preview_funky"/>
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="com.google.android.clockwork.home.category.HOME_BACKGROUND" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".GlassyActivity"
+            android:label="@string/title_glassy"
+            android:allowEmbedded="true" >
+            <meta-data
+                android:name="com.google.android.clockwork.home.preview"
+                android:resource="@drawable/preview_glassy"/>
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="com.google.android.clockwork.home.category.HOME_BACKGROUND" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".GremlinActivity"
+            android:label="@string/title_gremlin"
+            android:allowEmbedded="true" >
+            <meta-data
+                android:name="com.google.android.clockwork.home.preview"
+                android:resource="@drawable/preview_gremlin"/>
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="com.google.android.clockwork.home.category.HOME_BACKGROUND" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".IpulseActivity"
+            android:label="@string/title_ipulse"
+            android:allowEmbedded="true" >
+            <meta-data
+                android:name="com.google.android.clockwork.home.preview"
+                android:resource="@drawable/preview_ipulse"/>
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="com.google.android.clockwork.home.category.HOME_BACKGROUND" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".RadiumActivity"
+            android:label="@string/title_radium"
+            android:allowEmbedded="true" >
+            <meta-data
+                android:name="com.google.android.clockwork.home.preview"
+                android:resource="@drawable/preview_radium"/>
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="com.google.android.clockwork.home.category.HOME_BACKGROUND" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".SilviaActivity"
+            android:label="@string/title_silvia"
+            android:allowEmbedded="true" >
+            <meta-data
+                android:name="com.google.android.clockwork.home.preview"
+                android:resource="@drawable/preview_silvia"/>
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="com.google.android.clockwork.home.category.HOME_BACKGROUND" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".SimpleActivity"
+            android:label="@string/title_simple"
+            android:allowEmbedded="true" >
+            <meta-data
+                android:name="com.google.android.clockwork.home.preview"
+                android:resource="@drawable/preview_simple"/>
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="com.google.android.clockwork.home.category.HOME_BACKGROUND" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".TangoActivity"
+            android:label="@string/title_tango"
+            android:allowEmbedded="true" >
+            <meta-data
+                android:name="com.google.android.clockwork.home.preview"
+                android:resource="@drawable/preview_tango"/>
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="com.google.android.clockwork.home.category.HOME_BACKGROUND" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".ZenActivity"
+            android:label="@string/title_zen"
+            android:allowEmbedded="true" >
+            <meta-data
+                android:name="com.google.android.clockwork.home.preview"
+                android:resource="@drawable/preview_zen"/>
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="com.google.android.clockwork.home.category.HOME_BACKGROUND" />
+            </intent-filter>
+        </activity>
+    </application>
+
+</manifest>

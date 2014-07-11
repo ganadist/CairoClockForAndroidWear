@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">CairoClock</string>
+    <string name="title_activity_antique">AntiqueActivity</string>
+    <string name="title_antique">Antique</string>
+    <string name="title_default">Default</string>
+    <string name="title_fdo">FreeDesktop.org</string>
+    <string name="title_funky">Funky</string>
+    <string name="title_glassy">Glassy</string>
+    <string name="title_gremlin">Gremlin</string>
+    <string name="title_ipulse">IPulse</string>
+    <string name="title_radium">Radium</string>
+    <string name="title_silvia">Silvia</string>
+    <string name="title_simple">Simple</string>
+    <string name="title_tango">Tango</string>
+    <string name="title_zen">Zen</string>
+</resources>
