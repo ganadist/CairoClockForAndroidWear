@@ -124,7 +124,7 @@ public class ClockView extends View {
     private static final long HOUR_BASE = 1000 * 60 * 60 * 12;
     @Override
     protected void onDraw(Canvas canvas) {
-        long time = System.currentTimeMillis() - mTimezoneOffset;
+        long time = System.currentTimeMillis() + mTimezoneOffset;
         float secAngle = ((time % SEC_BASE) / (float)SEC_BASE) * 360f - 90f;
         float minAngle = ((time % MIN_BASE) / (float)MIN_BASE) * 360f -90f;
         float hourAngle = ((time % HOUR_BASE) / (float)HOUR_BASE) * 360f -90f;
