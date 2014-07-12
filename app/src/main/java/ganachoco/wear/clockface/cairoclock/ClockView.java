@@ -43,7 +43,7 @@ public class ClockView extends SurfaceView implements SurfaceHolder.Callback {
 
     private Bitmap mBitmaps[] = new Bitmap[ID_MAX];
     private Bitmap mBackgroundBitmap;
-    private Bitmap mFourgroundBitmap;
+    private Bitmap mForegroundBitmap;
 
     private static final String TAG = "CairoClock";
 
@@ -84,10 +84,10 @@ public class ClockView extends SurfaceView implements SurfaceHolder.Callback {
         canvas.drawBitmap(mBitmaps[ID_FACE], mMatrix, null);
         canvas.drawBitmap(mBitmaps[ID_MARKS], mMatrix, null);
 
-        mFourgroundBitmap = Bitmap.createBitmap(mBitmaps[ID_DROP_SHADOW].getWidth(),
+        mForegroundBitmap = Bitmap.createBitmap(mBitmaps[ID_DROP_SHADOW].getWidth(),
                 mBitmaps[ID_DROP_SHADOW].getHeight(),
                 Bitmap.Config.ARGB_8888);
-        canvas = new Canvas(mFourgroundBitmap);
+        canvas = new Canvas(mForegroundBitmap);
         canvas.drawBitmap(mBitmaps[ID_FACE_SHADOW], mMatrix, null);
         canvas.drawBitmap(mBitmaps[ID_GLASS], mMatrix, null);
         canvas.drawBitmap(mBitmaps[ID_FRAME], mMatrix, null);
@@ -187,7 +187,7 @@ public class ClockView extends SurfaceView implements SurfaceHolder.Callback {
                 canvas.drawBitmap(mBitmaps[ID_SECOND_HAND], mMatrix, null);
                 canvas.restore();
             }
-            canvas.drawBitmap(mFourgroundBitmap, mMatrix, null);
+            canvas.drawBitmap(mForegroundBitmap, mMatrix, null);
 
             canvas.restore();
         }
@@ -199,7 +199,7 @@ public class ClockView extends SurfaceView implements SurfaceHolder.Callback {
             mBitmaps[i].recycle();
         }
         mBackgroundBitmap.recycle();
-        mFourgroundBitmap.recycle();
+        mForegroundBitmap.recycle();
         try {
             super.finalize();
         } catch (Throwable throwable) {
