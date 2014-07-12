@@ -7,18 +7,22 @@ import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
+import android.graphics.PorterDuff;
 import android.os.Handler;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.SurfaceHolder;
+import android.view.SurfaceView;
 import android.view.View;
 import android.view.WindowManager;
 
 import java.util.TimeZone;
 
-public class ClockView extends View {
+public class ClockView extends SurfaceView implements SurfaceHolder.Callback {
     private Matrix mMatrix = new Matrix();
     private Paint mPaint = new Paint();
 
@@ -52,9 +56,11 @@ public class ClockView extends View {
     public ClockView(Context context) {
         this(context, null, 0);
     }
+
     public ClockView(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
+
     public ClockView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         mContext = context;
@@ -62,12 +68,9 @@ public class ClockView extends View {
     }
 
     void setResources(int[] ids) {
-        mBitmaps[ID_HOUR_HAND] = BitmapFactory.decodeResource(mContext.getResources(), ids[ID_HOUR_HAND]);
-        mBitmaps[ID_MINUTE_HAND] = BitmapFactory.decodeResource(mContext.getResources(), ids[ID_MINUTE_HAND]);
-        mBitmaps[ID_SECOND_HAND] = BitmapFactory.decodeResource(mContext.getResources(), ids[ID_SECOND_HAND]);
-        mBitmaps[ID_HOUR_HAND_SHADOW] = BitmapFactory.decodeResource(mContext.getResources(), ids[ID_HOUR_HAND_SHADOW]);
-        mBitmaps[ID_MINUTE_HAND_SHADOW] = BitmapFactory.decodeResource(mContext.getResources(), ids[ID_MINUTE_HAND_SHADOW]);
-        mBitmaps[ID_SECOND_HAND_SHADOW] = BitmapFactory.decodeResource(mContext.getResources(), ids[ID_SECOND_HAND_SHADOW]);
+        for (int i = 0; i < ID_MAX; i++) {
+            mBitmaps[i] = BitmapFactory.decodeResource(mContext.getResources(), ids[i]);
+        }
     }
 
     @Override
@@ -77,10 +80,6 @@ public class ClockView extends View {
             mAttached = true;
             IntentFilter filter = new IntentFilter(Intent.ACTION_TIMEZONE_CHANGED);
             mContext.registerReceiver(mIntentReceiver, filter, null, mHandler);
-            DisplayMetrics metrics = new DisplayMetrics();
-            ((WindowManager)mContext.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay().getMetrics(metrics);
-            mScreenWidth = metrics.widthPixels;
-            mScreenHeight = metrics.heightPixels;
         }
     }
 
@@ -107,48 +106,46 @@ public class ClockView extends View {
     private static final long MIN_BASE = 1000 * 60 * 60;
     private static final long HOUR_BASE = 1000 * 60 * 60 * 12;
 
-    @Override
-    protected void onDraw(Canvas canvas) {
-        super.onDraw(canvas);
-
-        if (getVisibility() != View.VISIBLE) {
-            return;
-        }
-
-        long time = System.currentTimeMillis() + mTimezoneOffset;
-        float secAngle = ((time % SEC_BASE) / (float)SEC_BASE) * 360f - 90f;
-        float minAngle = ((time % MIN_BASE) / (float)MIN_BASE) * 360f - 90f;
-        float hourAngle = ((time % HOUR_BASE) / (float)HOUR_BASE) * 360f - 90f;
+    private void drawClock(Canvas canvas, long time) {
+        float secAngle = ((time % SEC_BASE) / (float) SEC_BASE) * 360f - 90f;
+        float minAngle = ((time % MIN_BASE) / (float) MIN_BASE) * 360f - 90f;
+        float hourAngle = ((time % HOUR_BASE) / (float) HOUR_BASE) * 360f - 90f;
         final float shadowOffset = 3f;
 
         float scale = 1.0f;
         int bitmapWidth = mBitmaps[ID_HOUR_HAND].getWidth();
         if (bitmapWidth != mScreenWidth) {
-            scale = (float)mScreenWidth / (float)bitmapWidth;
+            scale = (float) mScreenWidth / (float) bitmapWidth;
         }
 
+        Log.d(TAG, "surface draw");
+
+        canvas.drawColor(Color.argb(0, 255, 255, 255), PorterDuff.Mode.CLEAR);
         {
             canvas.save();
             canvas.scale(scale, scale);
             {
+                canvas.drawBitmap(mBitmaps[ID_DROP_SHADOW], mMatrix, null);
+                canvas.drawBitmap(mBitmaps[ID_FACE], mMatrix, null);
+                canvas.drawBitmap(mBitmaps[ID_MARKS], mMatrix, null);
                 canvas.save();
                 canvas.translate(shadowOffset, shadowOffset);
                 {
                     canvas.save();
                     canvas.rotate(hourAngle, bitmapWidth / 2.0f, bitmapWidth / 2.0f);
-                    canvas.drawBitmap(mBitmaps[ID_HOUR_HAND_SHADOW], mMatrix, mPaint);
+                    canvas.drawBitmap(mBitmaps[ID_HOUR_HAND_SHADOW], mMatrix, null);
                     canvas.restore();
                 }
                 {
                     canvas.save();
                     canvas.rotate(minAngle, bitmapWidth / 2.0f, bitmapWidth / 2.0f);
-                    canvas.drawBitmap(mBitmaps[ID_MINUTE_HAND_SHADOW], mMatrix, mPaint);
+                    canvas.drawBitmap(mBitmaps[ID_MINUTE_HAND_SHADOW], mMatrix, null);
                     canvas.restore();
                 }
                 {
                     canvas.save();
                     canvas.rotate(secAngle, bitmapWidth / 2.0f, bitmapWidth / 2.0f);
-                    canvas.drawBitmap(mBitmaps[ID_SECOND_HAND_SHADOW], mMatrix, mPaint);
+                    canvas.drawBitmap(mBitmaps[ID_SECOND_HAND_SHADOW], mMatrix, null);
                     canvas.restore();
                 }
                 canvas.restore();
@@ -156,39 +153,90 @@ public class ClockView extends View {
             {
                 canvas.save();
                 canvas.rotate(hourAngle, bitmapWidth / 2.0f, bitmapWidth / 2.0f);
-                canvas.drawBitmap(mBitmaps[ID_HOUR_HAND], mMatrix, mPaint);
+                canvas.drawBitmap(mBitmaps[ID_HOUR_HAND], mMatrix, null);
                 canvas.restore();
             }
             {
                 canvas.save();
                 canvas.rotate(minAngle, bitmapWidth / 2.0f, bitmapWidth / 2.0f);
-                canvas.drawBitmap(mBitmaps[ID_MINUTE_HAND], mMatrix, mPaint);
+                canvas.drawBitmap(mBitmaps[ID_MINUTE_HAND], mMatrix, null);
                 canvas.restore();
             }
             {
                 canvas.save();
                 canvas.rotate(secAngle, bitmapWidth / 2.0f, bitmapWidth / 2.0f);
-                canvas.drawBitmap(mBitmaps[ID_SECOND_HAND], mMatrix, mPaint);
+                canvas.drawBitmap(mBitmaps[ID_SECOND_HAND], mMatrix, null);
                 canvas.restore();
             }
+            canvas.drawBitmap(mBitmaps[ID_FACE_SHADOW], mMatrix, null);
+            canvas.drawBitmap(mBitmaps[ID_GLASS], mMatrix, null);
+            canvas.drawBitmap(mBitmaps[ID_FRAME], mMatrix, null);
             canvas.restore();
         }
-
-        mHandler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                invalidate();
-            }
-        }, 100);
     }
 
     @Override
     protected void finalize() {
-        for (int i = ID_HOUR_HAND; i < ID_MARKS; i++) {
+        for (int i = 0; i < ID_MARKS; i++) {
             mBitmaps[i].recycle();
         }
         try {
             super.finalize();
-        } catch (Throwable throwable) { }
+        } catch (Throwable throwable) {
+        }
+    }
+
+    private boolean mRun;
+    private Thread mThread;
+
+    class DrawThread extends Thread {
+        public DrawThread() {
+            super();
+        }
+
+        @Override
+        public void run() {
+            while (mRun) {
+                SurfaceHolder h = getHolder();
+                if (!h.isCreating()) {
+                    long time = System.currentTimeMillis() + mTimezoneOffset;
+                    Canvas canvas = h.lockCanvas();
+                    if (canvas != null) {
+                        drawClock(canvas, time);
+                        h.unlockCanvasAndPost(canvas);
+                    }
+                }
+
+                try {
+                    Thread.sleep(100, 0);
+                } catch (InterruptedException e) {
+                }
+            }
+        }
+    }
+
+    @Override
+    public void surfaceCreated(SurfaceHolder holder) {
+        Log.d(TAG, "surface created");
+        mRun = true;
+        mThread = new DrawThread();
+        mThread.start();
+    }
+
+    @Override
+    public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
+        Log.d(TAG, "surface changed");
+        mScreenWidth = width;
+        mScreenHeight = height;
+    }
+
+    @Override
+    public void surfaceDestroyed(SurfaceHolder holder) {
+        Log.d(TAG, "surface destroyed");
+        mRun = false;
+        try {
+            mThread.join();
+        } catch (InterruptedException e) {
+        }
     }
 }

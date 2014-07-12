@@ -9,35 +9,10 @@
     <FrameLayout
         android:layout_width="fill_parent"
         android:layout_height="fill_parent">
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/drop_shadow" />
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/face" />
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/marks" />
         <ganachoco.wear.clockface.cairoclock.ClockView
             android:id="@+id/clock"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             />
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/face_shadow" />
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/glass" />
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/frame" />
     </FrameLayout>
-
 </RelativeLayout>

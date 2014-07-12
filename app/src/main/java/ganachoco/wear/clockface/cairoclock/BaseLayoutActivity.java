@@ -23,16 +23,18 @@ public abstract class BaseLayoutActivity extends Activity {
             public void onLayoutInflated(WatchViewStub stub) {
                 Log.d(TAG, "onLayoutInflated called");
                 int ids[] = getFrameResources();
+                /*
                 ((ImageView) stub.findViewById(R.id.drop_shadow)).setImageResource(ids[ClockView.ID_DROP_SHADOW]);
                 ((ImageView) stub.findViewById(R.id.face)).setImageResource(ids[ClockView.ID_FACE]);
                 ((ImageView) stub.findViewById(R.id.marks)).setImageResource(ids[ClockView.ID_MARKS]);
 
                 ((ImageView) stub.findViewById(R.id.face_shadow)).setImageResource(ids[ClockView.ID_FACE_SHADOW]);
                 ((ImageView) stub.findViewById(R.id.glass)).setImageResource(ids[ClockView.ID_GLASS]);
-                ((ImageView) stub.findViewById(R.id.frame)).setImageResource(ids[ClockView.ID_FRAME]);
+                ((ImageView) stub.findViewById(R.id.frame)).setImageResource(ids[ClockView.ID_FRAME]);*/
 
                 mClockView = (ClockView) stub.findViewById(R.id.clock);
                 mClockView.setResources(ids);
+                mClockView.getHolder().addCallback(mClockView);
 
             }
         });
