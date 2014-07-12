@@ -1,13 +1,6 @@
 package ganachoco.wear.clockface.cairoclock;
 
-import android.app.Activity;
-import android.os.Bundle;
-import android.support.wearable.view.WatchViewStub;
-import android.widget.TextView;
-
 public class AntiqueActivity extends BaseLayoutActivity {
-
-
     @Override
     protected int[] getFrameResources() {
         return new int[] {
@@ -24,10 +17,5 @@ public class AntiqueActivity extends BaseLayoutActivity {
             R.drawable.antique_clock_second_hand,
             R.drawable.antique_clock_second_hand_shadow
         };
-    }
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
     }
 }

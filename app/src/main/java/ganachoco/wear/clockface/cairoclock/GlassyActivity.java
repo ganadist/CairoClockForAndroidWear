@@ -1,10 +1,6 @@
 package ganachoco.wear.clockface.cairoclock;
 
-import android.os.Bundle;
-
 public class GlassyActivity extends BaseLayoutActivity {
-
-
     @Override
     protected int[] getFrameResources() {
         return new int[] {
@@ -21,10 +17,5 @@ public class GlassyActivity extends BaseLayoutActivity {
             R.drawable.glassy_clock_second_hand,
             R.drawable.glassy_clock_second_hand_shadow
         };
-    }
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
     }
 }

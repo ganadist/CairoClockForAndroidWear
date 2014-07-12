@@ -6,16 +6,11 @@ import android.support.wearable.view.WatchViewStub;
 import android.util.Log;
 import android.widget.ImageView;
 
-public class BaseLayoutActivity extends Activity {
-
-
+public abstract class BaseLayoutActivity extends Activity {
     private ClockView mClockView;
-
     private static final String TAG = "CairoClock";
 
-    protected int[] getFrameResources() {
-        return null;
-    }
+    protected abstract int[] getFrameResources();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,7 +42,6 @@ public class BaseLayoutActivity extends Activity {
     @Override
     protected void onPause() {
         Log.d(TAG, "Activity.onPause()");
-
         super.onPause();
     }
 
@@ -55,12 +49,10 @@ public class BaseLayoutActivity extends Activity {
     protected void onResume() {
         Log.d(TAG, "Activity.onResume()");
         super.onResume();
-
     }
 
     @Override
     protected void onDestroy() {
-
         super.onDestroy();
     }
 }
