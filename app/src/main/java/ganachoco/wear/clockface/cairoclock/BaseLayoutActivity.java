@@ -1,14 +1,19 @@
 package ganachoco.wear.clockface.cairoclock;
 
 import android.app.Activity;
+import android.content.Context;
+import android.hardware.display.DisplayManager;
 import android.os.Bundle;
 import android.support.wearable.view.WatchViewStub;
 import android.util.Log;
+import android.view.Display;
 import android.widget.ImageView;
 
-public abstract class BaseLayoutActivity extends Activity {
+public abstract class BaseLayoutActivity extends Activity implements DisplayManager.DisplayListener {
     private ClockView mClockView;
     private static final String TAG = "CairoClock";
+
+    private DisplayManager mDisplayManager;
 
     protected abstract int[] getFrameResources();
 
@@ -16,6 +21,8 @@ public abstract class BaseLayoutActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         Log.d(TAG, "Activity.onCreate()");
         super.onCreate(savedInstanceState);
+        mDisplayManager = (DisplayManager) getSystemService(Context.DISPLAY_SERVICE);
+        mDisplayManager.registerDisplayListener(this, null);
         setContentView(R.layout.base_layout);
         final WatchViewStub stub = (WatchViewStub) findViewById(R.id.watch_view_stub);
         stub.setOnLayoutInflatedListener(new WatchViewStub.OnLayoutInflatedListener() {
@@ -35,7 +42,7 @@ public abstract class BaseLayoutActivity extends Activity {
                 mClockView = (ClockView) stub.findViewById(R.id.clock);
                 mClockView.setResources(ids);
                 mClockView.getHolder().addCallback(mClockView);
-
+                mClockView.setPause(false);
             }
         });
     }
@@ -55,6 +62,35 @@ public abstract class BaseLayoutActivity extends Activity {
 
     @Override
     protected void onDestroy() {
+        mDisplayManager.unregisterDisplayListener(this);
         super.onDestroy();
     }
+
+    @Override
+    public void onDisplayRemoved(int displayId) {
+
+    }
+
+    @Override
+    public void onDisplayAdded(int displayId) {
+
+    }
+
+    @Override
+    public void onDisplayChanged(int displayId) {
+        switch(mDisplayManager.getDisplay(displayId).getState()){
+            case Display.STATE_DOZING:
+                // go to dim
+                break;
+            case Display.STATE_OFF:
+                // go to screen off
+                break;
+            default:
+                //  Not really sure what to so about Display.STATE_UNKNOWN, so
+                //  we'll treat it as if the screen is normal.
+                // screen on
+                break;
+        }
+    }
+
 }
