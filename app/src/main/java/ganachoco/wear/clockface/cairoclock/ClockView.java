@@ -54,17 +54,7 @@ public class ClockView extends View {
     private int mScreenHeight;
 
     private static final int MSG_UPDATE_CLOCK = 0;
-    private final Handler mHandler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            switch(msg.what) {
-                case MSG_UPDATE_CLOCK:
-                    invalidate();
-                    sendEmptyMessageDelayed(MSG_UPDATE_CLOCK, 100);
-                    break;
-            }
-        }
-    };
+    private final Handler mHandler = new Handler();
 
     public ClockView(Context context) {
         this(context, null, 0);
@@ -95,7 +85,6 @@ public class ClockView extends View {
             ((WindowManager)mContext.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay().getMetrics(metrics);
             mScreenWidth = metrics.widthPixels;
             mScreenHeight = metrics.heightPixels;
-            mHandler.sendEmptyMessage(MSG_UPDATE_CLOCK);
         }
     }
 
@@ -105,7 +94,6 @@ public class ClockView extends View {
         if (mAttached) {
             mAttached = false;
             getContext().unregisterReceiver(mIntentReceiver);
-            mHandler.removeMessages(MSG_UPDATE_CLOCK);
         }
     }
 
@@ -122,16 +110,20 @@ public class ClockView extends View {
     private static final long SEC_BASE = 1000 * 60;
     private static final long MIN_BASE = 1000 * 60 * 60;
     private static final long HOUR_BASE = 1000 * 60 * 60 * 12;
+
     @Override
     protected void onDraw(Canvas canvas) {
+        super.onDraw(canvas);
+
+        if (getVisibility() != View.VISIBLE) {
+            return;
+        }
+
         long time = System.currentTimeMillis() + mTimezoneOffset;
         float secAngle = ((time % SEC_BASE) / (float)SEC_BASE) * 360f - 90f;
         float minAngle = ((time % MIN_BASE) / (float)MIN_BASE) * 360f -90f;
         float hourAngle = ((time % HOUR_BASE) / (float)HOUR_BASE) * 360f -90f;
 
-        super.onDraw(canvas);
-
-        mMatrix.reset();
         float scale = 1.0f;
         int bitmapWidth = mBitmaps[ID_HOUR_HAND].getWidth();
         if (bitmapWidth != mScreenWidth) {
@@ -157,5 +149,11 @@ public class ClockView extends View {
         canvas.restore();
         canvas.restore();
 
+        mHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                invalidate();
+            }
+        }, 100);
     }
 }
