@@ -11,6 +11,7 @@ import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
 import android.os.Handler;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
@@ -41,6 +42,8 @@ public class ClockView extends SurfaceView implements SurfaceHolder.Callback {
     static final int ID_MAX = 12;
 
     private Bitmap mBitmaps[] = new Bitmap[ID_MAX];
+    private Bitmap mBackgroundBitmap;
+    private Bitmap mFourgroundBitmap;
 
     private static final String TAG = "CairoClock";
 
@@ -65,11 +68,32 @@ public class ClockView extends SurfaceView implements SurfaceHolder.Callback {
         super(context, attrs, defStyle);
         mContext = context;
         mTimezoneOffset = TimeZone.getDefault().getRawOffset();
+        mPaint.setARGB(255, 255, 255, 255);
+        mPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC));
     }
 
     void setResources(int[] ids) {
         for (int i = 0; i < ID_MAX; i++) {
             mBitmaps[i] = BitmapFactory.decodeResource(mContext.getResources(), ids[i]);
+        }
+        mBackgroundBitmap = Bitmap.createBitmap(mBitmaps[ID_DROP_SHADOW].getWidth(),
+                mBitmaps[ID_DROP_SHADOW].getHeight(),
+                Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(mBackgroundBitmap);
+        canvas.drawBitmap(mBitmaps[ID_DROP_SHADOW], mMatrix, null);
+        canvas.drawBitmap(mBitmaps[ID_FACE], mMatrix, null);
+        canvas.drawBitmap(mBitmaps[ID_MARKS], mMatrix, null);
+
+        mFourgroundBitmap = Bitmap.createBitmap(mBitmaps[ID_DROP_SHADOW].getWidth(),
+                mBitmaps[ID_DROP_SHADOW].getHeight(),
+                Bitmap.Config.ARGB_8888);
+        canvas = new Canvas(mFourgroundBitmap);
+        canvas.drawBitmap(mBitmaps[ID_FACE_SHADOW], mMatrix, null);
+        canvas.drawBitmap(mBitmaps[ID_GLASS], mMatrix, null);
+        canvas.drawBitmap(mBitmaps[ID_FRAME], mMatrix, null);
+        for (int i = 0; i <= ID_FRAME ; i++) {
+            mBitmaps[i].recycle();
+            mBitmaps[i] = null;
         }
     }
 
@@ -118,16 +142,11 @@ public class ClockView extends SurfaceView implements SurfaceHolder.Callback {
             scale = (float) mScreenWidth / (float) bitmapWidth;
         }
 
-        Log.d(TAG, "surface draw");
-
-        canvas.drawColor(Color.argb(0, 255, 255, 255), PorterDuff.Mode.CLEAR);
         {
             canvas.save();
             canvas.scale(scale, scale);
             {
-                canvas.drawBitmap(mBitmaps[ID_DROP_SHADOW], mMatrix, null);
-                canvas.drawBitmap(mBitmaps[ID_FACE], mMatrix, null);
-                canvas.drawBitmap(mBitmaps[ID_MARKS], mMatrix, null);
+                canvas.drawBitmap(mBackgroundBitmap, mMatrix, mPaint);
                 canvas.save();
                 canvas.translate(shadowOffset, shadowOffset);
                 {
@@ -168,18 +187,19 @@ public class ClockView extends SurfaceView implements SurfaceHolder.Callback {
                 canvas.drawBitmap(mBitmaps[ID_SECOND_HAND], mMatrix, null);
                 canvas.restore();
             }
-            canvas.drawBitmap(mBitmaps[ID_FACE_SHADOW], mMatrix, null);
-            canvas.drawBitmap(mBitmaps[ID_GLASS], mMatrix, null);
-            canvas.drawBitmap(mBitmaps[ID_FRAME], mMatrix, null);
+            canvas.drawBitmap(mFourgroundBitmap, mMatrix, null);
+
             canvas.restore();
         }
     }
 
     @Override
     protected void finalize() {
-        for (int i = 0; i < ID_MARKS; i++) {
+        for (int i = ID_HOUR_HAND; i < ID_MARKS; i++) {
             mBitmaps[i].recycle();
         }
+        mBackgroundBitmap.recycle();
+        mFourgroundBitmap.recycle();
         try {
             super.finalize();
         } catch (Throwable throwable) {
@@ -187,6 +207,8 @@ public class ClockView extends SurfaceView implements SurfaceHolder.Callback {
     }
 
     private boolean mRun;
+    private boolean mPause;
+    private boolean mConfigured;
     private Thread mThread;
 
     class DrawThread extends Thread {
@@ -198,7 +220,7 @@ public class ClockView extends SurfaceView implements SurfaceHolder.Callback {
         public void run() {
             while (mRun) {
                 SurfaceHolder h = getHolder();
-                if (!h.isCreating()) {
+                if (mConfigured && !mPause) {
                     long time = System.currentTimeMillis() + mTimezoneOffset;
                     Canvas canvas = h.lockCanvas();
                     if (canvas != null) {
@@ -219,6 +241,7 @@ public class ClockView extends SurfaceView implements SurfaceHolder.Callback {
     public void surfaceCreated(SurfaceHolder holder) {
         Log.d(TAG, "surface created");
         mRun = true;
+        mConfigured = false;
         mThread = new DrawThread();
         mThread.start();
     }
@@ -228,15 +251,20 @@ public class ClockView extends SurfaceView implements SurfaceHolder.Callback {
         Log.d(TAG, "surface changed");
         mScreenWidth = width;
         mScreenHeight = height;
+        mConfigured = true;
     }
 
     @Override
     public void surfaceDestroyed(SurfaceHolder holder) {
         Log.d(TAG, "surface destroyed");
         mRun = false;
+        mConfigured = false;
         try {
             mThread.join();
         } catch (InterruptedException e) {
         }
+    }
+    void setPause(boolean pause) {
+        mPause = pause;
     }
 }
