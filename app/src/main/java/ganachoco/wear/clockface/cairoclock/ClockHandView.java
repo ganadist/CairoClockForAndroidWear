@@ -89,15 +89,12 @@ public class ClockHandView extends View {
             canvas.restore();
         }
     }
-
-    @Override
-    protected void finalize() {
+    void onDestroy() {
         for (int i = 0; i < mBitmaps.length; i++) {
-            mBitmaps[i].recycle();
-        }
-        try {
-            super.finalize();
-        } catch (Throwable throwable) {
+            if (mBitmaps[i] != null) {
+                mBitmaps[i].recycle();
+                mBitmaps[i] = null;
+            }
         }
     }
 }

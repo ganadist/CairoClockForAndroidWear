@@ -2,6 +2,7 @@ package ganachoco.wear.clockface.cairoclock;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.support.wearable.view.WatchViewStub;
@@ -43,6 +44,15 @@ public abstract class BaseLayoutActivity extends WatchFaceActivity {
                 }
                 mClockView = (ClockFrameView) stub.findViewById(R.id.clock_frame);
                 mClockView.setResources(rids);
+                Intent intent = getIntent();
+                int time = intent.getIntExtra("time", -1);
+                if (time != -1) {
+                    int hour = time / 10000;
+                    int min = (time /100 ) % 100;
+                    int sec = time % 100;
+                    long ts = ((hour * 60 + min) * 60 + sec ) * 1000;
+                    mClockView.setFakeTime(ts);
+                }
             }
         });
     }
@@ -57,6 +67,12 @@ public abstract class BaseLayoutActivity extends WatchFaceActivity {
     protected void onResume() {
         Log.d(TAG, "Activity.onResume()");
         super.onResume();
+    }
+
+    @Override
+    protected void onDestroy() {
+        mClockView.onDestroy();
+        super.onDestroy();
     }
 
     @Override
