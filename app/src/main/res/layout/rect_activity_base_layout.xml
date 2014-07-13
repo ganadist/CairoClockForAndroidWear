@@ -9,7 +9,8 @@
 
     <FrameLayout
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent">
+        android:layout_height="fill_parent"
+        android:id="@+id/full_frame">
         <ImageView
             android:id="@+id/drop_shadow"
             android:layout_width="match_parent"
@@ -25,13 +26,30 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layerType="hardware" />
-
-        <ganachoco.wear.clockface.cairoclock.ClockView
-            android:id="@+id/clock"
+        <ganachoco.wear.clockface.cairoclock.ClockFrameView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layerType="hardware"
-            />
+            android:id="@+id/clock_frame">
+            <ganachoco.wear.clockface.cairoclock.ClockHandView
+                android:id="@+id/hand_hour"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layerType="hardware"
+                />
+            <ganachoco.wear.clockface.cairoclock.ClockHandView
+                android:id="@+id/hand_minute"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layerType="hardware"
+                />
+            <ganachoco.wear.clockface.cairoclock.ClockHandView
+                android:id="@+id/hand_second"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layerType="hardware"
+                />
+        </ganachoco.wear.clockface.cairoclock.ClockFrameView>
 
         <ImageView
             android:id="@+id/face_shadow"

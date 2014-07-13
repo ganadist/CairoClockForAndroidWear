@@ -2,6 +2,7 @@
 
 <set xmlns:android="http://schemas.android.com/apk/res/android"
     android:interpolator="@android:interpolator/decelerate_quad">
-    <alpha android:fromAlpha="1.0" android:toAlpha="0.6"
+    <alpha android:fromAlpha="0.0" android:toAlpha="1.0"
+        android:fillEnabled="true" android:fillBefore="true" android:fillAfter="true"
         android:duration="@android:integer/config_longAnimTime"/>
 </set>
