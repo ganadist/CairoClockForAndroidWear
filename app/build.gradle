@@ -8,8 +8,8 @@ android {
         applicationId 'ganachoco.wear.clockface.cairoclock'
         minSdkVersion 20
         targetSdkVersion 20
-        versionCode 4
-        versionName '1.0.1'
+        versionCode 11
+        versionName '1.0.6'
     }
     signingConfigs {
         release {

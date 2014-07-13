@@ -4,9 +4,14 @@ import android.app.Activity;
 import android.content.Context;
 import android.hardware.display.DisplayManager;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.support.wearable.view.WatchViewStub;
 import android.util.Log;
 import android.view.Display;
+import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.view.animation.Transformation;
 import android.widget.ImageView;
 
 public abstract class BaseLayoutActivity extends Activity implements DisplayManager.DisplayListener {
@@ -16,6 +21,7 @@ public abstract class BaseLayoutActivity extends Activity implements DisplayMana
     private DisplayManager mDisplayManager;
 
     protected abstract int[] getFrameResources();
+    private View[] mViews = new ImageView[6];
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,20 +35,21 @@ public abstract class BaseLayoutActivity extends Activity implements DisplayMana
             @Override
             public void onLayoutInflated(WatchViewStub stub) {
                 Log.d(TAG, "onLayoutInflated called");
-                int ids[] = getFrameResources();
-                /*
-                ((ImageView) stub.findViewById(R.id.drop_shadow)).setImageResource(ids[ClockView.ID_DROP_SHADOW]);
-                ((ImageView) stub.findViewById(R.id.face)).setImageResource(ids[ClockView.ID_FACE]);
-                ((ImageView) stub.findViewById(R.id.marks)).setImageResource(ids[ClockView.ID_MARKS]);
-
-                ((ImageView) stub.findViewById(R.id.face_shadow)).setImageResource(ids[ClockView.ID_FACE_SHADOW]);
-                ((ImageView) stub.findViewById(R.id.glass)).setImageResource(ids[ClockView.ID_GLASS]);
-                ((ImageView) stub.findViewById(R.id.frame)).setImageResource(ids[ClockView.ID_FRAME]);*/
-
+                int rids[] = getFrameResources();
+                int[] wids = {
+                        R.id.drop_shadow,
+                        R.id.face,
+                        R.id.marks,
+                        R.id.face_shadow,
+                        R.id.glass,
+                        R.id.frame
+                };
+                for (int i = 0; i <= ClockView.ID_FRAME; i++) {
+                    mViews[i] = (ImageView) stub.findViewById(wids[i]);
+                    ((ImageView)mViews[i]).setImageResource(rids[i]);
+                }
                 mClockView = (ClockView) stub.findViewById(R.id.clock);
-                mClockView.setResources(ids);
-                mClockView.getHolder().addCallback(mClockView);
-                mClockView.setPause(false);
+                mClockView.setResources(rids);
             }
         });
     }
@@ -76,11 +83,56 @@ public abstract class BaseLayoutActivity extends Activity implements DisplayMana
 
     }
 
+    private void enterDimAnimation(final View v) {
+        Animation ani = AnimationUtils.loadAnimation(this, R.anim.dim_enter);
+        ani.setAnimationListener(new Animation.AnimationListener() {
+                @Override
+                public void onAnimationStart(Animation animation) { }
+
+                @Override
+                public void onAnimationEnd(Animation animation) {
+                    v.setAlpha(0.6f);
+                    if (v == mClockView) mClockView.setDim(true);
+                }
+
+                @Override
+                public void onAnimationRepeat(Animation animation) { }
+            });
+            v.startAnimation(ani);
+    }
+
+    private void exitDimAnimation(final View v) {
+        Animation ani = AnimationUtils.loadAnimation(this, R.anim.dim_exit);
+        ani.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+                if (v == mClockView) mClockView.setDim(false);
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                v.setAlpha(1f);
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) { }
+        });
+        v.startAnimation(ani);
+    }
+
+    private boolean mDim;
     @Override
     public void onDisplayChanged(int displayId) {
+
         switch(mDisplayManager.getDisplay(displayId).getState()){
             case Display.STATE_DOZING:
                 // go to dim
+                if (!mDim) {
+                    mDim = true;
+                    for (int i = 0; i < mViews.length; i++)
+                        enterDimAnimation(mViews[i]);
+                    enterDimAnimation(mClockView);
+                }
                 break;
             case Display.STATE_OFF:
                 // go to screen off
@@ -89,6 +141,12 @@ public abstract class BaseLayoutActivity extends Activity implements DisplayMana
                 //  Not really sure what to so about Display.STATE_UNKNOWN, so
                 //  we'll treat it as if the screen is normal.
                 // screen on
+                if (mDim) {
+                    mDim = false;
+                    for (int i = 0; i < mViews.length; i++)
+                        exitDimAnimation(mViews[i]);
+                    exitDimAnimation(mClockView);
+                }
                 break;
         }
     }
