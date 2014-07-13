@@ -12,18 +12,14 @@ import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.os.Handler;
-import android.os.Message;
 import android.util.AttributeSet;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
-import android.view.View;
-import android.view.WindowManager;
 
 import java.util.TimeZone;
 
-public class ClockView extends View {
+public class ClockSurfaceView extends SurfaceView implements SurfaceHolder.Callback {
     private Matrix mMatrix = new Matrix();
     private Paint mPaint = new Paint();
 
@@ -42,6 +38,8 @@ public class ClockView extends View {
     static final int ID_MAX = 12;
 
     private Bitmap mBitmaps[] = new Bitmap[ID_MAX];
+    private Bitmap mBackgroundBitmap;
+    private Bitmap mForegroundBitmap;
 
     private static final String TAG = "CairoClock";
 
@@ -51,37 +49,47 @@ public class ClockView extends View {
 
     private int mScreenWidth;
     private int mScreenHeight;
-    private boolean mDim;
 
-    private static final int MSG_UPDATE_DRAW = 0;
-    private final Handler mHandler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            switch(msg.what) {
-                case MSG_UPDATE_DRAW:
-                    sendEmptyMessageDelayed(MSG_UPDATE_DRAW, 100);
-                    invalidate();
-            }
-        }
-    };
+    private final Handler mHandler = new Handler();
 
-    public ClockView(Context context) {
+    public ClockSurfaceView(Context context) {
         this(context, null, 0);
     }
 
-    public ClockView(Context context, AttributeSet attrs) {
+    public ClockSurfaceView(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public ClockView(Context context, AttributeSet attrs, int defStyle) {
+    public ClockSurfaceView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         mContext = context;
         mTimezoneOffset = TimeZone.getDefault().getRawOffset();
+        mPaint.setARGB(255, 255, 255, 255);
+        mPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC));
     }
 
     void setResources(int[] ids) {
-        for (int i = ID_HOUR_HAND; i < ID_MAX; i++) {
+        for (int i = 0; i < ID_MAX; i++) {
             mBitmaps[i] = BitmapFactory.decodeResource(mContext.getResources(), ids[i]);
+        }
+        mBackgroundBitmap = Bitmap.createBitmap(mBitmaps[ID_DROP_SHADOW].getWidth(),
+                mBitmaps[ID_DROP_SHADOW].getHeight(),
+                Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(mBackgroundBitmap);
+        canvas.drawBitmap(mBitmaps[ID_DROP_SHADOW], mMatrix, null);
+        canvas.drawBitmap(mBitmaps[ID_FACE], mMatrix, null);
+        canvas.drawBitmap(mBitmaps[ID_MARKS], mMatrix, null);
+
+        mForegroundBitmap = Bitmap.createBitmap(mBitmaps[ID_DROP_SHADOW].getWidth(),
+                mBitmaps[ID_DROP_SHADOW].getHeight(),
+                Bitmap.Config.ARGB_8888);
+        canvas = new Canvas(mForegroundBitmap);
+        canvas.drawBitmap(mBitmaps[ID_FACE_SHADOW], mMatrix, null);
+        canvas.drawBitmap(mBitmaps[ID_GLASS], mMatrix, null);
+        canvas.drawBitmap(mBitmaps[ID_FRAME], mMatrix, null);
+        for (int i = 0; i <= ID_FRAME ; i++) {
+            mBitmaps[i].recycle();
+            mBitmaps[i] = null;
         }
     }
 
@@ -91,12 +99,7 @@ public class ClockView extends View {
         if (!mAttached) {
             mAttached = true;
             IntentFilter filter = new IntentFilter(Intent.ACTION_TIMEZONE_CHANGED);
-            mContext.registerReceiver(mTimezoneChangedReceiver, filter, null, mHandler);
-            DisplayMetrics metrics = new DisplayMetrics();
-            ((WindowManager)mContext.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay().getMetrics(metrics);
-            mScreenWidth = metrics.widthPixels;
-            mScreenHeight = metrics.heightPixels;
-            mHandler.sendEmptyMessage(MSG_UPDATE_DRAW);
+            mContext.registerReceiver(mIntentReceiver, filter, null, mHandler);
         }
     }
 
@@ -105,16 +108,11 @@ public class ClockView extends View {
         super.onDetachedFromWindow();
         if (mAttached) {
             mAttached = false;
-            getContext().unregisterReceiver(mTimezoneChangedReceiver);
-            mHandler.removeMessages(MSG_UPDATE_DRAW);
-            if (mDim) {
-                mContext.unregisterReceiver(mTimeTickReceiver);
-                mDim = false;
-            }
+            getContext().unregisterReceiver(mIntentReceiver);
         }
     }
 
-    private final BroadcastReceiver mTimezoneChangedReceiver = new BroadcastReceiver() {
+    private final BroadcastReceiver mIntentReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             if (intent.getAction().equals(Intent.ACTION_TIMEZONE_CHANGED)) {
@@ -123,22 +121,6 @@ public class ClockView extends View {
             }
         }
     };
-
-    private final BroadcastReceiver mTimeTickReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            if (intent.getAction().equals(Intent.ACTION_TIME_TICK)) {
-                invalidate();
-            }
-        }
-    };
-
-    @Override
-    protected void onDraw(Canvas canvas) {
-        super.onDraw(canvas);
-        long time = System.currentTimeMillis() + mTimezoneOffset;
-        drawClock(canvas, time);
-    }
 
     private static final long SEC_BASE = 1000 * 60;
     private static final long MIN_BASE = 1000 * 60 * 60;
@@ -160,6 +142,7 @@ public class ClockView extends View {
             canvas.save();
             canvas.scale(scale, scale);
             {
+                canvas.drawBitmap(mBackgroundBitmap, mMatrix, mPaint);
                 canvas.save();
                 canvas.translate(shadowOffset, shadowOffset);
                 {
@@ -174,7 +157,7 @@ public class ClockView extends View {
                     canvas.drawBitmap(mBitmaps[ID_MINUTE_HAND_SHADOW], mMatrix, null);
                     canvas.restore();
                 }
-                if (!mDim){
+                {
                     canvas.save();
                     canvas.rotate(secAngle, bitmapWidth / 2.0f, bitmapWidth / 2.0f);
                     canvas.drawBitmap(mBitmaps[ID_SECOND_HAND_SHADOW], mMatrix, null);
@@ -194,38 +177,90 @@ public class ClockView extends View {
                 canvas.drawBitmap(mBitmaps[ID_MINUTE_HAND], mMatrix, null);
                 canvas.restore();
             }
-            if (!mDim) {
+            {
                 canvas.save();
                 canvas.rotate(secAngle, bitmapWidth / 2.0f, bitmapWidth / 2.0f);
                 canvas.drawBitmap(mBitmaps[ID_SECOND_HAND], mMatrix, null);
                 canvas.restore();
             }
+            canvas.drawBitmap(mForegroundBitmap, mMatrix, null);
+
             canvas.restore();
         }
     }
 
-    void setDim(boolean dim) {
-        if (mDim == dim) return;
-        if (dim) {
-            mDim = true;
-            IntentFilter filter = new IntentFilter(Intent.ACTION_TIMEZONE_CHANGED);
-            mContext.registerReceiver(mTimeTickReceiver, filter);
-            mHandler.removeMessages(MSG_UPDATE_DRAW);
-        } else {
-            mDim = false;
-            mContext.unregisterReceiver(mTimeTickReceiver);
-            mHandler.sendEmptyMessage(MSG_UPDATE_DRAW);
-        }
-        invalidate();
-    }
     @Override
     protected void finalize() {
         for (int i = ID_HOUR_HAND; i < ID_MARKS; i++) {
             mBitmaps[i].recycle();
         }
+        mBackgroundBitmap.recycle();
+        mForegroundBitmap.recycle();
         try {
             super.finalize();
         } catch (Throwable throwable) {
         }
+    }
+
+    private boolean mRun;
+    private boolean mPause;
+    private boolean mConfigured;
+    private Thread mThread;
+
+    class DrawThread extends Thread {
+        public DrawThread() {
+            super();
+        }
+
+        @Override
+        public void run() {
+            while (mRun) {
+                SurfaceHolder h = getHolder();
+                if (mConfigured && !mPause) {
+                    long time = System.currentTimeMillis() + mTimezoneOffset;
+                    Canvas canvas = h.lockCanvas();
+                    if (canvas != null) {
+                        drawClock(canvas, time);
+                        h.unlockCanvasAndPost(canvas);
+                    }
+                }
+
+                try {
+                    Thread.sleep(100, 0);
+                } catch (InterruptedException e) {
+                }
+            }
+        }
+    }
+
+    @Override
+    public void surfaceCreated(SurfaceHolder holder) {
+        Log.d(TAG, "surface created");
+        mRun = true;
+        mConfigured = false;
+        mThread = new DrawThread();
+        mThread.start();
+    }
+
+    @Override
+    public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
+        Log.d(TAG, "surface changed");
+        mScreenWidth = width;
+        mScreenHeight = height;
+        mConfigured = true;
+    }
+
+    @Override
+    public void surfaceDestroyed(SurfaceHolder holder) {
+        Log.d(TAG, "surface destroyed");
+        mRun = false;
+        mConfigured = false;
+        try {
+            mThread.join();
+        } catch (InterruptedException e) {
+        }
+    }
+    void setPause(boolean pause) {
+        mPause = pause;
     }
 }
