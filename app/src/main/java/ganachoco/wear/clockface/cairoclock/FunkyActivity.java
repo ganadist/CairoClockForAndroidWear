@@ -18,4 +18,9 @@ public class FunkyActivity extends BaseLayoutActivity {
             R.drawable.funky_clock_second_hand_shadow
         };
     }
+
+    @Override
+    protected float getFrameScale() {
+        return 1.2f;
+    }
 }

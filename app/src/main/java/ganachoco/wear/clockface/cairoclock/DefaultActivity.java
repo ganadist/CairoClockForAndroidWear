@@ -18,4 +18,9 @@ public class DefaultActivity extends BaseLayoutActivity {
             R.drawable.default_clock_second_hand_shadow
         };
     }
+
+    @Override
+    protected float getFrameScale() {
+        return 1.1f;
+    }
 }

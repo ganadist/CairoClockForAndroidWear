@@ -18,4 +18,9 @@ public class ZenActivity extends BaseLayoutActivity {
             R.drawable.zen_clock_second_hand_shadow
         };
     }
+
+    @Override
+    protected float getFrameScale() {
+        return 1.27f;
+    }
 }

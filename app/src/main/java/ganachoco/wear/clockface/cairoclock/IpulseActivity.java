@@ -18,4 +18,9 @@ public class IpulseActivity extends BaseLayoutActivity {
             R.drawable.ipulse_clock_second_hand_shadow
         };
     }
+
+    @Override
+    protected float getFrameScale() {
+        return 1.2f;
+    }
 }

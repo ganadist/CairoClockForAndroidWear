@@ -12,16 +12,19 @@
         android:id="@+id/full_frame">
         <ImageView
             android:id="@+id/drop_shadow"
+            android:scaleType="fitCenter"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layerType="hardware" />
         <ImageView
             android:id="@+id/face"
+            android:scaleType="fitCenter"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layerType="hardware" />
         <ImageView
             android:id="@+id/marks"
+            android:scaleType="fitCenter"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layerType="hardware" />
@@ -52,19 +55,21 @@
 
         <ImageView
             android:id="@+id/face_shadow"
+            android:scaleType="fitCenter"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layerType="hardware" />
         <ImageView
             android:id="@+id/frame"
+            android:scaleType="fitCenter"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layerType="hardware" />
         <ImageView
             android:id="@+id/glass"
+            android:scaleType="fitCenter"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layerType="hardware" />
-
     </FrameLayout>
 </RelativeLayout>
