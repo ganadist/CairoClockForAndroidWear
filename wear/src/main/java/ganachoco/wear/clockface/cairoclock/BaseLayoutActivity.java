@@ -17,7 +17,6 @@ public abstract class BaseLayoutActivity extends WatchFaceActivity {
     private static final String TAG = "CairoClock";
 
     protected abstract int[] getFrameResources();
-    protected abstract float getFrameScale();
     private View[] mViews = new ImageView[6];
 
     @Override
@@ -54,8 +53,6 @@ public abstract class BaseLayoutActivity extends WatchFaceActivity {
                     long ts = ((hour * 60 + min) * 60 + sec ) * 1000;
                     mClockView.setFakeTime(ts);
                 }
-                ((View)stub.findViewById(R.id.full_frame)).setScaleX(getFrameScale());
-                ((View)stub.findViewById(R.id.full_frame)).setScaleY(getFrameScale());
             }
         });
     }

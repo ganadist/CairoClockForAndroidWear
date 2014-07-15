@@ -18,9 +18,4 @@ public class AntiqueActivity extends BaseLayoutActivity {
             R.drawable.antique_clock_second_hand_shadow
         };
     }
-
-    @Override
-    protected float getFrameScale() {
-        return 1.26f;
-    }
 }

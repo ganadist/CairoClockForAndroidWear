@@ -18,9 +18,4 @@ public class SilviaActivity extends BaseLayoutActivity {
             R.drawable.silvia_clock_second_hand_shadow
         };
     }
-
-    @Override
-    protected float getFrameScale() {
-        return 1.15f;
-    }
 }

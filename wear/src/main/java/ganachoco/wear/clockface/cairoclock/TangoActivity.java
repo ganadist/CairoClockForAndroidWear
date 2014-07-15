@@ -18,9 +18,4 @@ public class TangoActivity extends BaseLayoutActivity {
             R.drawable.tango_clock_second_hand_shadow
         };
     }
-
-    @Override
-    protected float getFrameScale() {
-        return 1.27f;
-    }
 }

@@ -18,9 +18,4 @@ public class RadiumActivity extends BaseLayoutActivity {
             R.drawable.radium_clock_second_hand_shadow
         };
     }
-
-    @Override
-    protected float getFrameScale() {
-        return 1.19f;
-    }
 }

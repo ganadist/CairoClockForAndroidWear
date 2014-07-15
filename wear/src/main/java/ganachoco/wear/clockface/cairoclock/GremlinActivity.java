@@ -18,9 +18,4 @@ public class GremlinActivity extends BaseLayoutActivity {
             R.drawable.gremlin_clock_second_hand_shadow
         };
     }
-
-    @Override
-    protected float getFrameScale() {
-        return 1.f;
-    }
 }

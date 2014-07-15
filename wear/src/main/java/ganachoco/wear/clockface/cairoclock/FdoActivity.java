@@ -18,9 +18,4 @@ public class FdoActivity extends BaseLayoutActivity {
             R.drawable.fdo_clock_second_hand_shadow
         };
     }
-
-    @Override
-    protected float getFrameScale() {
-        return 1.25f;
-    }
 }
