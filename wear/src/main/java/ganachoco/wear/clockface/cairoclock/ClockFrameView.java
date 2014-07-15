@@ -68,7 +68,8 @@ public class ClockFrameView extends FrameLayout {
             Log.d(TAG, "onAttachedWindow");
             mAttached = true;
             IntentFilter filter = new IntentFilter(Intent.ACTION_TIMEZONE_CHANGED);
-            mContext.registerReceiver(mTimezoneChangedReceiver, filter);
+            filter.addAction(Intent.ACTION_TIME_CHANGED);
+            mContext.registerReceiver(mTimeChangedReceiver, filter);
             mHandler.sendEmptyMessage(MSG_UPDATE_DRAW);
         }
     }
@@ -79,7 +80,7 @@ public class ClockFrameView extends FrameLayout {
         if (mAttached) {
             Log.d(TAG, "onDetachedWindow");
             mAttached = false;
-            mContext.unregisterReceiver(mTimezoneChangedReceiver);
+            mContext.unregisterReceiver(mTimeChangedReceiver);
             if (mDim) {
                 mContext.unregisterReceiver(mTimeTickReceiver);
             }
@@ -94,12 +95,14 @@ public class ClockFrameView extends FrameLayout {
         invalidate();
     }
 
-    private final BroadcastReceiver mTimezoneChangedReceiver = new BroadcastReceiver() {
+    private final BroadcastReceiver mTimeChangedReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             if (intent.getAction().equals(Intent.ACTION_TIMEZONE_CHANGED)) {
                 String tz = intent.getStringExtra("time-zone");
                 mTimezoneOffset = TimeZone.getTimeZone(tz).getRawOffset();
+                queueDraw();
+            } else if (intent.getAction().equals(Intent.ACTION_TIME_CHANGED)) {
                 queueDraw();
             }
         }
