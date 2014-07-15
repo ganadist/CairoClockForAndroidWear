@@ -8,8 +8,8 @@ android {
         applicationId 'ganachoco.wear.clockface.cairoclock'
         minSdkVersion 20
         targetSdkVersion 20
-        versionCode 15
-        versionName '1.0.8'
+        versionCode 16
+        versionName '1.0.9'
     }
     signingConfigs {
         release {
@@ -34,5 +34,4 @@ android {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'com.google.android.support:wearable:+'
-    compile 'com.google.android.gms:play-services-wearable:+'
 }
