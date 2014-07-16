@@ -100,7 +100,7 @@ public class ClockFrameView extends FrameLayout {
         public void onReceive(Context context, Intent intent) {
             if (intent.getAction().equals(Intent.ACTION_TIMEZONE_CHANGED)) {
                 String tz = intent.getStringExtra("time-zone");
-                mTimezoneOffset = TimeZone.getTimeZone(tz).getRawOffset();
+                mTimezoneOffset = TimeZone.getTimeZone(tz).getOffset(System.currentTimeMillis());
                 queueDraw();
             } else if (intent.getAction().equals(Intent.ACTION_TIME_CHANGED)) {
                 queueDraw();
