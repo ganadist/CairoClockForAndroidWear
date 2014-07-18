@@ -1,3 +1,5 @@
+/** currently it is not used */
+
 package ganachoco.wear.clockface.cairoclock;
 
 import android.content.BroadcastReceiver;

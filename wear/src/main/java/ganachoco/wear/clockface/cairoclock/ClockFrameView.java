@@ -28,8 +28,14 @@ public class ClockFrameView extends FrameLayout {
         this(context, null);
     }
 
-    public ClockFrameView(Context context, AttributeSet attrs) {
-        this(context, attrs, 0);
+    public ClockFrameView(Context context, AttributeSet attrs) { this(context, attrs, 0); }
+
+    public ClockFrameView(Context context, AttributeSet attrs, int defStyle) {
+        super(context, attrs, defStyle);
+        mContext = context;
+        mTZ = TimeZone.getDefault();
+        mTimeSource = new RealTime();
+
         mDimEnterAnim = AnimationUtils.loadAnimation(getContext(), R.anim.dim_hand_enter);
         mDimEnterAnim.setAnimationListener(new Animation.AnimationListener() {
             @Override
@@ -52,14 +58,6 @@ public class ClockFrameView extends FrameLayout {
             @Override
             public void onAnimationEnd(Animation animation) { }
         });
-    }
-
-
-    public ClockFrameView(Context context, AttributeSet attrs, int defStyle) {
-        super(context, attrs, defStyle);
-        mContext = context;
-        mTZ = TimeZone.getDefault();
-        mTimeSource = new RealTime();
     }
 
     protected void onAttachedToWindow() {
@@ -89,8 +87,8 @@ public class ClockFrameView extends FrameLayout {
     }
 
     private void queueDraw() {
-        for (int i=0; i < mHands.length; i++) {
-            mHands[i].invalidate();
+        for(View v: mHands) {
+            v.invalidate();
         }
         invalidate();
     }

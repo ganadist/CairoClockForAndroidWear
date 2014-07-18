@@ -1,23 +1,19 @@
 package ganachoco.wear.clockface.cairoclock;
 
-import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.SystemClock;
-import android.support.wearable.view.WatchViewStub;
 import android.util.Log;
 import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
+
+import android.support.wearable.view.WatchViewStub;
 
 public abstract class BaseLayoutActivity extends WatchFaceActivity {
     private ClockFrameView mClockView;
     private static final String TAG = "CairoClock";
 
     protected abstract int[] getFrameResources();
-    private View[] mViews = new ImageView[6];
+    private ImageView[] mViews = new ImageView[6];
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,7 +36,7 @@ public abstract class BaseLayoutActivity extends WatchFaceActivity {
                 };
                 for (int i = 0; i <= ClockView.ID_FRAME; i++) {
                     mViews[i] = (ImageView) stub.findViewById(wids[i]);
-                    ((ImageView)mViews[i]).setImageResource(rids[i]);
+                    mViews[i].setImageResource(rids[i]);
                 }
                 mClockView = (ClockFrameView) stub.findViewById(R.id.clock_frame);
                 mClockView.setResources(rids);
@@ -71,6 +67,7 @@ public abstract class BaseLayoutActivity extends WatchFaceActivity {
 
     @Override
     protected void onDestroy() {
+        Log.d(TAG, "Activity.onDestroy()");
         mClockView.onDestroy();
         super.onDestroy();
     }
