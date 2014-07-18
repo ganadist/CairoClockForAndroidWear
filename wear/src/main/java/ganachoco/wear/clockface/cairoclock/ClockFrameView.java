@@ -18,7 +18,7 @@ import java.util.TimeZone;
 public class ClockFrameView extends FrameLayout {
     private Context mContext;
     private boolean mAttached;
-    private long mTimezoneOffset;
+    private TimeZone mTZ;
     private ClockHandView[] mHands = new ClockHandView[3];
     private Animation mDimEnterAnim;
     private Animation mDimExitAnim;
@@ -58,7 +58,7 @@ public class ClockFrameView extends FrameLayout {
     public ClockFrameView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         mContext = context;
-        mTimezoneOffset = TimeZone.getDefault().getRawOffset();
+        mTZ = TimeZone.getDefault();
         mTimeSource = new RealTime();
     }
 
@@ -100,7 +100,7 @@ public class ClockFrameView extends FrameLayout {
         public void onReceive(Context context, Intent intent) {
             if (intent.getAction().equals(Intent.ACTION_TIMEZONE_CHANGED)) {
                 String tz = intent.getStringExtra("time-zone");
-                mTimezoneOffset = TimeZone.getTimeZone(tz).getOffset(System.currentTimeMillis());
+                mTZ = TimeZone.getTimeZone(tz);
                 queueDraw();
             } else if (intent.getAction().equals(Intent.ACTION_TIME_CHANGED)) {
                 queueDraw();
@@ -178,7 +178,8 @@ public class ClockFrameView extends FrameLayout {
 
     class RealTime implements TimeSource {
         public long getTime() {
-            return System.currentTimeMillis() + mTimezoneOffset;
+            long time = System.currentTimeMillis();
+            return time + mTZ.getOffset(time);
         }
     }
 
