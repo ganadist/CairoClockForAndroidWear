@@ -2,12 +2,12 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="ganachoco.wear.clockface.cairoclock">
 
-    <uses-sdk android:minSdkVersion="20" />
+    <uses-sdk android:minSdkVersion="21" />
 
     <uses-feature android:name="android.hardware.type.watch" />
 
     <uses-permission android:name="android.permission.WAKE_LOCK" />
-    <uses-permission android:name="android.permission.PROVIDE_BACKGROUND" />
+    <uses-permission android:name="com.google.android.permission.PROVIDE_BACKGROUND" />
 
     <application
         android:allowBackup="false"

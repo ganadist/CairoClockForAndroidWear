@@ -5,8 +5,7 @@ import android.support.wearable.watchface.WatchFaceStyle;
 public class GremlinWatchFaceService extends BaseWatchFaceService {
     @Override
     protected void setupWatchStyle(Engine engine) {
-
-        int resIds[] = {
+        final int resIds[] = {
                 R.drawable.gremlin_clock_hour_hand_shadow,
                 R.drawable.gremlin_clock_minute_hand_shadow,
                 R.drawable.gremlin_clock_second_hand_shadow,

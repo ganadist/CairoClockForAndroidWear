@@ -5,8 +5,7 @@ import android.support.wearable.watchface.WatchFaceStyle;
 public class TangoWatchFaceService extends BaseWatchFaceService {
     @Override
     protected void setupWatchStyle(Engine engine) {
-
-        int resIds[] = {
+        final int resIds[] = {
                 R.drawable.tango_clock_hour_hand_shadow,
                 R.drawable.tango_clock_minute_hand_shadow,
                 R.drawable.tango_clock_second_hand_shadow,

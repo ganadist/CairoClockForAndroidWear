@@ -5,8 +5,7 @@ import android.support.wearable.watchface.WatchFaceStyle;
 public class FunkyWatchFaceService extends BaseWatchFaceService {
     @Override
     protected void setupWatchStyle(Engine engine) {
-
-        int resIds[] = {
+        final int resIds[] = {
                 R.drawable.funky_clock_hour_hand_shadow,
                 R.drawable.funky_clock_minute_hand_shadow,
                 R.drawable.funky_clock_second_hand_shadow,

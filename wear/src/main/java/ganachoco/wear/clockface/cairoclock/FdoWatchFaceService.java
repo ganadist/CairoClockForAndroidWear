@@ -5,7 +5,6 @@ import android.support.wearable.watchface.WatchFaceStyle;
 public class FdoWatchFaceService extends BaseWatchFaceService {
     @Override
     protected void setupWatchStyle(Engine engine) {
-
         final int resIds[] = {
                 R.drawable.fdo_clock_hour_hand_shadow,
                 R.drawable.fdo_clock_minute_hand_shadow,

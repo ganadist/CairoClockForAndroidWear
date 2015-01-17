@@ -104,16 +104,17 @@ public class BaseWatchFaceService extends CanvasWatchFaceService {
 
     private void getHandAngles(float[] outAngles) {
         final long time = mTimeSource.getTime();
-        outAngles[0] = (time % HOUR_BASE) / (float) HOUR_BASE * 360f;
-        outAngles[1] = (time % MIN_BASE) / (float) MIN_BASE * 360f;
-        outAngles[2] = (time % SEC_BASE) / (float) SEC_BASE * 360f;
+        outAngles[0] = (time % HOUR_BASE) * 360 / (float) HOUR_BASE;
+        outAngles[1] = (time % MIN_BASE) * 360 / (float) MIN_BASE;
+        outAngles[2] = (time % SEC_BASE) *360 / (float) SEC_BASE;
     }
 
     private Bitmap mBackgroundBitmap, mForegroundBitmap;
     private Bitmap[] mBitmaps;
     private Rect mHandClip;
     private float mShadowOffset;
-    private int mHalfWidth;
+    private int mHalfBitmapWidth;
+    private float mScale = 1.0f;
 
     static final int ID_HOUR_HAND_SHADOW = 0;
     static final int ID_MINUTE_HAND_SHADOW = 1;
@@ -171,34 +172,26 @@ public class BaseWatchFaceService extends CanvasWatchFaceService {
         }
 
         final int width = mBackgroundBitmap.getWidth();
-        mHalfWidth = width / 2;
+        mHalfBitmapWidth = width / 2;
 
         final float clipOffset = 0.1f;
         mHandClip = new Rect(
-                (int)(mHalfWidth * (1.0f - clipOffset)),
-                (int)(mHalfWidth * (1.0f - clipOffset)),
+                (int)(mHalfBitmapWidth * (1.0f - clipOffset)),
+                (int)(mHalfBitmapWidth * (1.0f - clipOffset)),
                 width,
-                (int)(mHalfWidth * (1.0f + clipOffset)));
+                (int)(mHalfBitmapWidth * (1.0f + clipOffset)));
 
         mShadowOffset = width / 80.0f;
     }
 
     private void drawHand(Canvas canvas, Bitmap bitmap, float angle) {
         canvas.save();
-        canvas.rotate(angle, mHalfWidth, mHalfWidth);
+        canvas.rotate(angle, mHalfBitmapWidth, mHalfBitmapWidth);
         canvas.drawBitmap(bitmap, mHandClip, mHandClip, null);
         canvas.restore();
     }
 
     private void onDrawClockFace(Canvas canvas, Rect bound, boolean isAmbientMode) {
-
-        float scale = 1.0f;
-        final int width = mBitmaps[ID_HOUR_HAND].getWidth();
-
-        if (width != bound.width()) {
-            scale = (float) bound.width() / (float) width;
-        }
-
         float[] angles = new float[3];
         getHandAngles(angles);
 
@@ -208,7 +201,7 @@ public class BaseWatchFaceService extends CanvasWatchFaceService {
 
         {
             canvas.save();
-            canvas.scale(scale, scale);
+            canvas.scale(mScale, mScale);
             canvas.drawBitmap(mBackgroundBitmap, mMatrix, mPaint);
             {
                 canvas.save();
@@ -255,6 +248,12 @@ public class BaseWatchFaceService extends CanvasWatchFaceService {
         public void onCreate(SurfaceHolder holder) {
             super.onCreate(holder);
             setupWatchStyle(this);
+        }
+
+        @Override
+        public void onSurfaceChanged(SurfaceHolder holder, int format, int width, int height) {
+            super.onSurfaceChanged(holder, format, width, height);
+            mScale = (float) width / (float) (mHalfBitmapWidth * 2);
             mHandler.sendEmptyMessage(MSG_UPDATE_TIME_CONTINUOUSLY);
         }
 
