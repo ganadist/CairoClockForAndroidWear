@@ -2,6 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="ganachoco.wear.clockface.cairoclock" >
 
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.PROVIDE_BACKGROUND" />
+
     <application
         android:allowBackup="false"
         android:icon="@drawable/preview_fdo"

@@ -9,8 +9,8 @@ android {
         applicationId "ganachoco.wear.clockface.cairoclock"
         minSdkVersion 18
         targetSdkVersion 18
-        versionCode 16
-        versionName '1.0.9'
+        versionCode Integer.parseInt(version_code)
+        versionName version_name
     }
     signingConfigs {
         release {
@@ -22,7 +22,7 @@ android {
     }
     buildTypes {
         release {
-            runProguard false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.release
         }

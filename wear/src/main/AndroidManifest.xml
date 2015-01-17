@@ -6,8 +6,8 @@
 
     <uses-feature android:name="android.hardware.type.watch" />
 
-    <!-- <uses-permission android:name="android.permission.WAKE_LOCK" />
-    <uses-permission android:name="android.permission.PROVIDE_BACKGROUND" /> -->
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.PROVIDE_BACKGROUND" />
 
     <application
         android:allowBackup="false"
@@ -15,150 +15,281 @@
         android:label="@string/app_name"
 
         android:theme="@android:style/Theme.DeviceDefault.NoActionBar" >
-        <activity
-            android:name=".AntiqueActivity"
-            android:label="@string/title_antique"
-            android:allowEmbedded="true" >
-            <meta-data
-                android:name="com.google.android.clockwork.home.preview"
-                android:resource="@drawable/preview_antique"/>
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="com.google.android.clockwork.home.category.HOME_BACKGROUND" />
-            </intent-filter>
-        </activity>
-        <activity
-            android:name=".DefaultActivity"
-            android:label="@string/title_default"
-            android:allowEmbedded="true" >
-            <meta-data
-                android:name="com.google.android.clockwork.home.preview"
-                android:resource="@drawable/preview_default"/>
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="com.google.android.clockwork.home.category.HOME_BACKGROUND" />
-            </intent-filter>
-        </activity>
-        <activity
-            android:name=".FdoActivity"
-            android:label="@string/title_fdo"
-            android:allowEmbedded="true" >
-            <meta-data
-                android:name="com.google.android.clockwork.home.preview"
-                android:resource="@drawable/preview_fdo"/>
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="com.google.android.clockwork.home.category.HOME_BACKGROUND" />
-            </intent-filter>
-        </activity>
-        <activity
-            android:name=".FunkyActivity"
-            android:label="@string/title_funky"
-            android:allowEmbedded="true" >
-            <meta-data
-                android:name="com.google.android.clockwork.home.preview"
-                android:resource="@drawable/preview_funky"/>
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="com.google.android.clockwork.home.category.HOME_BACKGROUND" />
-            </intent-filter>
-        </activity>
-        <activity
-            android:name=".GlassyActivity"
-            android:label="@string/title_glassy"
-            android:allowEmbedded="true" >
-            <meta-data
-                android:name="com.google.android.clockwork.home.preview"
-                android:resource="@drawable/preview_glassy"/>
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="com.google.android.clockwork.home.category.HOME_BACKGROUND" />
-            </intent-filter>
-        </activity>
-        <activity
-            android:name=".GremlinActivity"
-            android:label="@string/title_gremlin"
-            android:allowEmbedded="true" >
-            <meta-data
-                android:name="com.google.android.clockwork.home.preview"
-                android:resource="@drawable/preview_gremlin"/>
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="com.google.android.clockwork.home.category.HOME_BACKGROUND" />
-            </intent-filter>
-        </activity>
-        <activity
-            android:name=".IpulseActivity"
-            android:label="@string/title_ipulse"
-            android:allowEmbedded="true" >
-            <meta-data
-                android:name="com.google.android.clockwork.home.preview"
-                android:resource="@drawable/preview_ipulse"/>
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="com.google.android.clockwork.home.category.HOME_BACKGROUND" />
-            </intent-filter>
-        </activity>
-        <activity
-            android:name=".RadiumActivity"
-            android:label="@string/title_radium"
-            android:allowEmbedded="true" >
-            <meta-data
-                android:name="com.google.android.clockwork.home.preview"
-                android:resource="@drawable/preview_radium"/>
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="com.google.android.clockwork.home.category.HOME_BACKGROUND" />
-            </intent-filter>
-        </activity>
-        <activity
-            android:name=".SilviaActivity"
-            android:label="@string/title_silvia"
-            android:allowEmbedded="true" >
-            <meta-data
-                android:name="com.google.android.clockwork.home.preview"
-                android:resource="@drawable/preview_silvia"/>
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="com.google.android.clockwork.home.category.HOME_BACKGROUND" />
-            </intent-filter>
-        </activity>
-        <activity
-            android:name=".SimpleActivity"
-            android:label="@string/title_simple"
-            android:allowEmbedded="true" >
-            <meta-data
-                android:name="com.google.android.clockwork.home.preview"
-                android:resource="@drawable/preview_simple"/>
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="com.google.android.clockwork.home.category.HOME_BACKGROUND" />
-            </intent-filter>
-        </activity>
-        <activity
-            android:name=".TangoActivity"
-            android:label="@string/title_tango"
-            android:allowEmbedded="true" >
-            <meta-data
-                android:name="com.google.android.clockwork.home.preview"
-                android:resource="@drawable/preview_tango"/>
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="com.google.android.clockwork.home.category.HOME_BACKGROUND" />
-            </intent-filter>
-        </activity>
-        <activity
-            android:name=".ZenActivity"
-            android:label="@string/title_zen"
-            android:allowEmbedded="true" >
-            <meta-data
-                android:name="com.google.android.clockwork.home.preview"
-                android:resource="@drawable/preview_zen"/>
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="com.google.android.clockwork.home.category.HOME_BACKGROUND" />
-            </intent-filter>
-        </activity>
-    </application>
 
+        <service
+            android:name=".AntiqueWatchFaceService"
+            android:label="@string/title_antique"
+            android:allowEmbedded="true"
+            android:taskAffinity=""
+            android:permission="android.permission.BIND_WALLPAPER" >
+            <meta-data
+                android:name="android.service.wallpaper"
+                android:resource="@xml/watch_face" />
+            <meta-data
+                android:name="com.google.android.wearable.watchface.preview"
+                android:resource="@drawable/preview_antique" />
+            <meta-data
+                android:name="com.google.android.wearable.watchface.preview_circular"
+                android:resource="@drawable/preview_antique" />
+            <intent-filter>
+                <action android:name="android.service.wallpaper.WallpaperService" />
+                <category
+                    android:name=
+                        "com.google.android.wearable.watchface.category.WATCH_FACE" />
+            </intent-filter>
+        </service>
+
+        <service
+            android:name=".DefaultWatchFaceService"
+            android:label="@string/title_default"
+            android:allowEmbedded="true"
+            android:taskAffinity=""
+            android:permission="android.permission.BIND_WALLPAPER" >
+            <meta-data
+                android:name="android.service.wallpaper"
+                android:resource="@xml/watch_face" />
+            <meta-data
+                android:name="com.google.android.wearable.watchface.preview"
+                android:resource="@drawable/preview_default" />
+            <meta-data
+                android:name="com.google.android.wearable.watchface.preview_circular"
+                android:resource="@drawable/preview_default" />
+            <intent-filter>
+                <action android:name="android.service.wallpaper.WallpaperService" />
+                <category
+                    android:name=
+                        "com.google.android.wearable.watchface.category.WATCH_FACE" />
+            </intent-filter>
+        </service>
+
+        <service
+            android:name=".FdoWatchFaceService"
+            android:label="@string/title_fdo"
+            android:allowEmbedded="true"
+            android:taskAffinity=""
+            android:permission="android.permission.BIND_WALLPAPER" >
+            <meta-data
+                android:name="android.service.wallpaper"
+                android:resource="@xml/watch_face" />
+            <meta-data
+                android:name="com.google.android.wearable.watchface.preview"
+                android:resource="@drawable/preview_fdo" />
+            <meta-data
+                android:name="com.google.android.wearable.watchface.preview_circular"
+                android:resource="@drawable/preview_fdo" />
+            <intent-filter>
+                <action android:name="android.service.wallpaper.WallpaperService" />
+                <category
+                    android:name=
+                        "com.google.android.wearable.watchface.category.WATCH_FACE" />
+            </intent-filter>
+        </service>
+
+        <service
+            android:name=".FunkyWatchFaceService"
+            android:label="@string/title_funky"
+            android:allowEmbedded="true"
+            android:taskAffinity=""
+            android:permission="android.permission.BIND_WALLPAPER" >
+            <meta-data
+                android:name="android.service.wallpaper"
+                android:resource="@xml/watch_face" />
+            <meta-data
+                android:name="com.google.android.wearable.watchface.preview"
+                android:resource="@drawable/preview_funky" />
+            <meta-data
+                android:name="com.google.android.wearable.watchface.preview_circular"
+                android:resource="@drawable/preview_funky" />
+            <intent-filter>
+                <action android:name="android.service.wallpaper.WallpaperService" />
+                <category
+                    android:name=
+                        "com.google.android.wearable.watchface.category.WATCH_FACE" />
+            </intent-filter>
+        </service>
+
+        <service
+            android:name=".GlassyWatchFaceService"
+            android:label="@string/title_glassy"
+            android:allowEmbedded="true"
+            android:taskAffinity=""
+            android:permission="android.permission.BIND_WALLPAPER" >
+            <meta-data
+                android:name="android.service.wallpaper"
+                android:resource="@xml/watch_face" />
+            <meta-data
+                android:name="com.google.android.wearable.watchface.preview"
+                android:resource="@drawable/preview_glassy" />
+            <meta-data
+                android:name="com.google.android.wearable.watchface.preview_circular"
+                android:resource="@drawable/preview_glassy" />
+            <intent-filter>
+                <action android:name="android.service.wallpaper.WallpaperService" />
+                <category
+                    android:name=
+                        "com.google.android.wearable.watchface.category.WATCH_FACE" />
+            </intent-filter>
+        </service>
+
+        <service
+            android:name=".GremlinWatchFaceService"
+            android:label="@string/title_gremlin"
+            android:allowEmbedded="true"
+            android:taskAffinity=""
+            android:permission="android.permission.BIND_WALLPAPER" >
+            <meta-data
+                android:name="android.service.wallpaper"
+                android:resource="@xml/watch_face" />
+            <meta-data
+                android:name="com.google.android.wearable.watchface.preview"
+                android:resource="@drawable/preview_gremlin" />
+            <meta-data
+                android:name="com.google.android.wearable.watchface.preview_circular"
+                android:resource="@drawable/preview_gremlin" />
+            <intent-filter>
+                <action android:name="android.service.wallpaper.WallpaperService" />
+                <category
+                    android:name=
+                        "com.google.android.wearable.watchface.category.WATCH_FACE" />
+            </intent-filter>
+        </service>
+
+        <service
+            android:name=".IpulseWatchFaceService"
+            android:label="@string/title_ipulse"
+            android:allowEmbedded="true"
+            android:taskAffinity=""
+            android:permission="android.permission.BIND_WALLPAPER" >
+            <meta-data
+                android:name="android.service.wallpaper"
+                android:resource="@xml/watch_face" />
+            <meta-data
+                android:name="com.google.android.wearable.watchface.preview"
+                android:resource="@drawable/preview_ipulse" />
+            <meta-data
+                android:name="com.google.android.wearable.watchface.preview_circular"
+                android:resource="@drawable/preview_ipulse" />
+            <intent-filter>
+                <action android:name="android.service.wallpaper.WallpaperService" />
+                <category
+                    android:name=
+                        "com.google.android.wearable.watchface.category.WATCH_FACE" />
+            </intent-filter>
+        </service>
+
+        <service
+            android:name=".RadiumWatchFaceService"
+            android:label="@string/title_radium"
+            android:allowEmbedded="true"
+            android:taskAffinity=""
+            android:permission="android.permission.BIND_WALLPAPER" >
+            <meta-data
+                android:name="android.service.wallpaper"
+                android:resource="@xml/watch_face" />
+            <meta-data
+                android:name="com.google.android.wearable.watchface.preview"
+                android:resource="@drawable/preview_radium" />
+            <meta-data
+                android:name="com.google.android.wearable.watchface.preview_circular"
+                android:resource="@drawable/preview_radium" />
+            <intent-filter>
+                <action android:name="android.service.wallpaper.WallpaperService" />
+                <category
+                    android:name=
+                        "com.google.android.wearable.watchface.category.WATCH_FACE" />
+            </intent-filter>
+        </service>
+
+        <service
+            android:name=".SilviaWatchFaceService"
+            android:label="@string/title_silvia"
+            android:allowEmbedded="true"
+            android:taskAffinity=""
+            android:permission="android.permission.BIND_WALLPAPER" >
+            <meta-data
+                android:name="android.service.wallpaper"
+                android:resource="@xml/watch_face" />
+            <meta-data
+                android:name="com.google.android.wearable.watchface.preview"
+                android:resource="@drawable/preview_silvia" />
+            <meta-data
+                android:name="com.google.android.wearable.watchface.preview_circular"
+                android:resource="@drawable/preview_silvia" />
+            <intent-filter>
+                <action android:name="android.service.wallpaper.WallpaperService" />
+                <category
+                    android:name=
+                        "com.google.android.wearable.watchface.category.WATCH_FACE" />
+            </intent-filter>
+        </service>
+
+        <service
+            android:name=".SimpleWatchFaceService"
+            android:label="@string/title_simple"
+            android:allowEmbedded="true"
+            android:taskAffinity=""
+            android:permission="android.permission.BIND_WALLPAPER" >
+            <meta-data
+                android:name="android.service.wallpaper"
+                android:resource="@xml/watch_face" />
+            <meta-data
+                android:name="com.google.android.wearable.watchface.preview"
+                android:resource="@drawable/preview_simple" />
+            <meta-data
+                android:name="com.google.android.wearable.watchface.preview_circular"
+                android:resource="@drawable/preview_simple" />
+            <intent-filter>
+                <action android:name="android.service.wallpaper.WallpaperService" />
+                <category
+                    android:name=
+                        "com.google.android.wearable.watchface.category.WATCH_FACE" />
+            </intent-filter>
+        </service>
+
+        <service
+            android:name=".TangoWatchFaceService"
+            android:label="@string/title_tango"
+            android:allowEmbedded="true"
+            android:taskAffinity=""
+            android:permission="android.permission.BIND_WALLPAPER" >
+            <meta-data
+                android:name="android.service.wallpaper"
+                android:resource="@xml/watch_face" />
+            <meta-data
+                android:name="com.google.android.wearable.watchface.preview"
+                android:resource="@drawable/preview_tango" />
+            <meta-data
+                android:name="com.google.android.wearable.watchface.preview_circular"
+                android:resource="@drawable/preview_tango" />
+            <intent-filter>
+                <action android:name="android.service.wallpaper.WallpaperService" />
+                <category
+                    android:name=
+                        "com.google.android.wearable.watchface.category.WATCH_FACE" />
+            </intent-filter>
+        </service>
+
+        <service
+            android:name=".ZenWatchFaceService"
+            android:label="@string/title_zen"
+            android:allowEmbedded="true"
+            android:taskAffinity=""
+            android:permission="android.permission.BIND_WALLPAPER" >
+            <meta-data
+                android:name="android.service.wallpaper"
+                android:resource="@xml/watch_face" />
+            <meta-data
+                android:name="com.google.android.wearable.watchface.preview"
+                android:resource="@drawable/preview_zen" />
+            <meta-data
+                android:name="com.google.android.wearable.watchface.preview_circular"
+                android:resource="@drawable/preview_zen" />
+            <intent-filter>
+                <action android:name="android.service.wallpaper.WallpaperService" />
+                <category
+                    android:name=
+                        "com.google.android.wearable.watchface.category.WATCH_FACE" />
+            </intent-filter>
+        </service>
+    </application>
 </manifest>
