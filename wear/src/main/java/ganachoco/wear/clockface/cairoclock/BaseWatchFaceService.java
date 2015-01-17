@@ -21,37 +21,10 @@ import android.view.SurfaceHolder;
 import java.util.TimeZone;
 
 public class BaseWatchFaceService extends CanvasWatchFaceService {
-    @Override
-    public Engine onCreateEngine() {
-        mTZ = TimeZone.getDefault();
-        mTimeSource = new RoughTimeSource();
-        mPaint.setARGB(255, 255, 255, 255);
-        mPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC));
-        return new Engine();
-    }
 
     private Matrix mMatrix = new Matrix();
     private Paint mPaint = new Paint();
-
     private TimeZone mTZ;
-    private boolean mRegisteredReceiver;
-    private void registerReceiver() {
-        if (mRegisteredReceiver) {
-            return;
-        }
-
-        IntentFilter filter = new IntentFilter(Intent.ACTION_TIMEZONE_CHANGED);
-        registerReceiver(mReceiver, filter);
-        mRegisteredReceiver = true;
-    }
-
-    private void unregisterReceiver() {
-        if (!mRegisteredReceiver) {
-            return;
-        }
-        unregisterReceiver(mReceiver);
-        mRegisteredReceiver = false;
-    }
 
     private BroadcastReceiver mReceiver = new BroadcastReceiver() {
         @Override
@@ -62,11 +35,6 @@ public class BaseWatchFaceService extends CanvasWatchFaceService {
             }
         }
     };
-
-
-    private static final long SEC_BASE = 1000 * 60;
-    private static final long MIN_BASE = 1000 * 60 * 60;
-    private static final long HOUR_BASE = 1000 * 60 * 60 * 12;
 
     private interface TimeSource {
         long getTime();
@@ -79,10 +47,15 @@ public class BaseWatchFaceService extends CanvasWatchFaceService {
         }
     }
 
-    private class RoughTimeSource implements  TimeSource {
+    private class RoughTimeSource extends ExactTimeSource {
+        private final int mResolution;
+        public RoughTimeSource(int resolution) {
+            mResolution = resolution;
+        }
+
+        @Override
         public long getTime() {
-            long time = System.currentTimeMillis() / 1000 * 1000;
-            return time + mTZ.getOffset(time);
+            return super.getTime() / mResolution * mResolution;
         }
     }
 
@@ -98,8 +71,49 @@ public class BaseWatchFaceService extends CanvasWatchFaceService {
 
     private TimeSource mTimeSource;
 
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        mTZ = TimeZone.getDefault();
+        mTimeSource = new ExactTimeSource();
+        mPaint.setARGB(255, 255, 255, 255);
+        mPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC));
+        IntentFilter filter = new IntentFilter(Intent.ACTION_TIMEZONE_CHANGED);
+        registerReceiver(mReceiver, filter);
+    }
+
+    @Override
+    public void onDestroy() {
+        unregisterReceiver(mReceiver);
+        if (mBackgroundBitmap != null) mBackgroundBitmap.recycle();
+        if (mForegroundBitmap != null) mForegroundBitmap.recycle();
+        for (Bitmap b: mBitmaps) {
+            if (b != null) b.recycle();
+        }
+        super.onDestroy();
+    }
+
+    @Override
+    public Engine onCreateEngine() {
+        return new Engine();
+    }
+
+    private static final long SEC_BASE = 1000 * 60;
+    private static final long MIN_BASE = 1000 * 60 * 60;
+    private static final long HOUR_BASE = 1000 * 60 * 60 * 12;
+
+    private void getHandAngles(float[] outAngles) {
+        final long time = mTimeSource.getTime();
+        outAngles[0] = (time % HOUR_BASE) / (float) HOUR_BASE * 360f;
+        outAngles[1] = (time % MIN_BASE) / (float) MIN_BASE * 360f;
+        outAngles[2] = (time % SEC_BASE) / (float) SEC_BASE * 360f;
+    }
+
     private Bitmap mBackgroundBitmap, mForegroundBitmap;
     private Bitmap[] mBitmaps;
+    private Rect mHandClip;
+    private float mShadowOffset;
+    private int mHalfWidth;
 
     static final int ID_HOUR_HAND_SHADOW = 0;
     static final int ID_MINUTE_HAND_SHADOW = 1;
@@ -136,14 +150,14 @@ public class BaseWatchFaceService extends CanvasWatchFaceService {
     }
 
     protected void loadBitmaps(int[] resIds) {
-        int[] foreIds = {
+        final int[] foreIds = {
                 resIds[ID_FACE_SHADOW],
                 resIds[ID_GLASS],
                 resIds[ID_FRAME],
         };
         mForegroundBitmap = composite(foreIds);
 
-        int[] backIds = {
+        final int[] backIds = {
                 resIds[ID_DROP_SHADOW],
                 resIds[ID_FACE],
                 resIds[ID_MARKS],
@@ -155,23 +169,42 @@ public class BaseWatchFaceService extends CanvasWatchFaceService {
             mBitmaps[i] = BitmapFactory.decodeResource(getResources(),
                     resIds[ID_HOUR_HAND_SHADOW + i]);
         }
+
+        final int width = mBackgroundBitmap.getWidth();
+        mHalfWidth = width / 2;
+
+        final float clipOffset = 0.1f;
+        mHandClip = new Rect(
+                (int)(mHalfWidth * (1.0f - clipOffset)),
+                (int)(mHalfWidth * (1.0f - clipOffset)),
+                width,
+                (int)(mHalfWidth * (1.0f + clipOffset)));
+
+        mShadowOffset = width / 80.0f;
     }
 
-    private void onDrawClockFace(Canvas canvas, Rect bound,
-                                   float hourAngle, float minAngle, float secAngle,
-                                   boolean isAmbientMode) {
+    private void drawHand(Canvas canvas, Bitmap bitmap, float angle) {
+        canvas.save();
+        canvas.rotate(angle, mHalfWidth, mHalfWidth);
+        canvas.drawBitmap(bitmap, mHandClip, mHandClip, null);
+        canvas.restore();
+    }
+
+    private void onDrawClockFace(Canvas canvas, Rect bound, boolean isAmbientMode) {
 
         float scale = 1.0f;
         final int width = mBitmaps[ID_HOUR_HAND].getWidth();
 
-        final float shadowOffset = width / 80.0f;
-        final float halfWidth = width / 2.0f;
         if (width != bound.width()) {
             scale = (float) bound.width() / (float) width;
         }
 
-        final Rect handClip = new Rect((int)(halfWidth * 0.8f), (int)(halfWidth * 0.8f),
-                width, (int)(halfWidth * 1.2f));
+        float[] angles = new float[3];
+        getHandAngles(angles);
+
+        final float hourAngle = angles[0] - 90f;
+        final float minAngle = angles[1] - 90f;
+        final float secAngle = angles[2] - 90f;
 
         {
             canvas.save();
@@ -179,45 +212,24 @@ public class BaseWatchFaceService extends CanvasWatchFaceService {
             canvas.drawBitmap(mBackgroundBitmap, mMatrix, mPaint);
             {
                 canvas.save();
-                canvas.translate(shadowOffset, shadowOffset);
-                {
-                    canvas.save();
-                    canvas.rotate(hourAngle, halfWidth, halfWidth);
-                    canvas.drawBitmap(mBitmaps[ID_HOUR_HAND_SHADOW], handClip, handClip, null);
-                    canvas.restore();
-                }
-                {
-                    canvas.save();
-                    canvas.rotate(minAngle, halfWidth, halfWidth);
-                    canvas.drawBitmap(mBitmaps[ID_MINUTE_HAND_SHADOW], handClip, handClip, null);
-                    canvas.restore();
-                }
+                canvas.translate(mShadowOffset, mShadowOffset);
+
+                drawHand(canvas, mBitmaps[ID_HOUR_HAND_SHADOW], hourAngle);
+                drawHand(canvas, mBitmaps[ID_MINUTE_HAND_SHADOW], minAngle);
+
                 if (!isAmbientMode) {
-                    canvas.save();
-                    canvas.rotate(secAngle, halfWidth, halfWidth);
-                    canvas.drawBitmap(mBitmaps[ID_SECOND_HAND_SHADOW], handClip, handClip, null);
-                    canvas.restore();
+                    drawHand(canvas, mBitmaps[ID_SECOND_HAND_SHADOW], secAngle);
                 }
                 canvas.restore();
             }
-            {
-                canvas.save();
-                canvas.rotate(hourAngle, halfWidth, halfWidth);
-                canvas.drawBitmap(mBitmaps[ID_HOUR_HAND], handClip, handClip, null);
-                canvas.restore();
-            }
-            {
-                canvas.save();
-                canvas.rotate(minAngle, halfWidth, halfWidth);
-                canvas.drawBitmap(mBitmaps[ID_MINUTE_HAND], handClip, handClip, null);
-                canvas.restore();
-            }
+
+            drawHand(canvas, mBitmaps[ID_HOUR_HAND], hourAngle);
+            drawHand(canvas, mBitmaps[ID_MINUTE_HAND], minAngle);
+
             if (!isAmbientMode) {
-                canvas.save();
-                canvas.rotate(secAngle, halfWidth, halfWidth);
-                canvas.drawBitmap(mBitmaps[ID_SECOND_HAND], handClip, handClip, null);
-                canvas.restore();
+                drawHand(canvas, mBitmaps[ID_SECOND_HAND], secAngle);
             }
+
             canvas.drawBitmap(mForegroundBitmap, mMatrix, null);
             canvas.restore();
         }
@@ -244,7 +256,6 @@ public class BaseWatchFaceService extends CanvasWatchFaceService {
             super.onCreate(holder);
             setupWatchStyle(this);
             mHandler.sendEmptyMessage(MSG_UPDATE_TIME_CONTINUOUSLY);
-            registerReceiver();
         }
 
         @Override
@@ -262,7 +273,8 @@ public class BaseWatchFaceService extends CanvasWatchFaceService {
         public void onAmbientModeChanged(boolean isAmbientMode) {
             super.onAmbientModeChanged(isAmbientMode);
             if (isAmbientMode) {
-                mTimeSource = new RoughTimeSource();
+                final int SECOND_ON_MILLIS = 1000;
+                mTimeSource = new RoughTimeSource(SECOND_ON_MILLIS);
                 invalidate();
             } else {
                 mTimeSource = new ExactTimeSource();
@@ -272,12 +284,7 @@ public class BaseWatchFaceService extends CanvasWatchFaceService {
 
         @Override
         public void onDraw(Canvas canvas, Rect bound) {
-            final long time = mTimeSource.getTime();
-            final float secAngle = (time % SEC_BASE) / (float) SEC_BASE * 360f - 90f;
-            final float minAngle = (time % MIN_BASE) / (float) MIN_BASE * 360f - 90f;
-            final float hourAngle = (time % HOUR_BASE) / (float) HOUR_BASE * 360f - 90f;
-            onDrawClockFace(canvas, bound,
-                    hourAngle, minAngle, secAngle, isInAmbientMode());
+            onDrawClockFace(canvas, bound, isInAmbientMode());
         }
 
         @Override
@@ -285,9 +292,6 @@ public class BaseWatchFaceService extends CanvasWatchFaceService {
             super.onVisibilityChanged(visible);
             if (visible) {
                 mHandler.sendEmptyMessage(MSG_UPDATE_TIME_CONTINUOUSLY);
-                registerReceiver();
-            } else {
-                unregisterReceiver();
             }
         }
     }
