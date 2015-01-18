@@ -1,7 +1,5 @@
 package ganachoco.wear.clockface.cairoclock;
 
-import android.support.wearable.watchface.WatchFaceStyle;
-
 public class FdoWatchFaceService extends BaseWatchFaceService {
     @Override
     protected void setupWatchStyle(Engine engine) {
@@ -20,12 +18,5 @@ public class FdoWatchFaceService extends BaseWatchFaceService {
                 R.drawable.fdo_clock_frame,
         };
         loadBitmaps(resIds);
-
-        engine.setWatchFaceStyle(new WatchFaceStyle.Builder(this)
-                .setCardPeekMode(WatchFaceStyle.PEEK_MODE_SHORT)
-                .setBackgroundVisibility(WatchFaceStyle
-                        .BACKGROUND_VISIBILITY_INTERRUPTIVE)
-                .setShowSystemUiTime(false)
-                .build());
     }
 }

@@ -16,6 +16,8 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.wearable.watchface.CanvasWatchFaceService;
+import android.support.wearable.watchface.WatchFaceStyle;
+import android.view.Gravity;
 import android.view.SurfaceHolder;
 
 import java.util.TimeZone;
@@ -191,7 +193,7 @@ public class BaseWatchFaceService extends CanvasWatchFaceService {
         canvas.restore();
     }
 
-    private void onDrawClockFace(Canvas canvas, Rect bound, boolean isAmbientMode) {
+    private void onDrawClockFace(Canvas canvas, boolean isAmbientMode) {
         float[] angles = new float[3];
         getHandAngles(angles);
 
@@ -248,6 +250,18 @@ public class BaseWatchFaceService extends CanvasWatchFaceService {
         public void onCreate(SurfaceHolder holder) {
             super.onCreate(holder);
             setupWatchStyle(this);
+            setWatchFaceStyle(new WatchFaceStyle.Builder(BaseWatchFaceService.this)
+                    .setCardPeekMode(WatchFaceStyle.PEEK_MODE_SHORT)
+                    .setBackgroundVisibility(WatchFaceStyle
+                            .BACKGROUND_VISIBILITY_INTERRUPTIVE)
+                    .setAmbientPeekMode(WatchFaceStyle.AMBIENT_PEEK_MODE_HIDDEN)
+                    .setHotwordIndicatorGravity(Gravity.TOP | Gravity.RIGHT)
+                    .setStatusBarGravity(Gravity.TOP | Gravity.LEFT)
+                    .setShowUnreadCountIndicator(true)
+                    .setViewProtection(WatchFaceStyle.PROTECT_HOTWORD_INDICATOR |
+                            WatchFaceStyle.PROTECT_STATUS_BAR)
+                    .setShowSystemUiTime(false)
+                    .build());
         }
 
         @Override
@@ -283,7 +297,7 @@ public class BaseWatchFaceService extends CanvasWatchFaceService {
 
         @Override
         public void onDraw(Canvas canvas, Rect bound) {
-            onDrawClockFace(canvas, bound, isInAmbientMode());
+            onDrawClockFace(canvas, isInAmbientMode());
         }
 
         @Override

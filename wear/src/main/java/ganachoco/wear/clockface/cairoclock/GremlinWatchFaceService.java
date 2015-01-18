@@ -1,7 +1,5 @@
 package ganachoco.wear.clockface.cairoclock;
 
-import android.support.wearable.watchface.WatchFaceStyle;
-
 public class GremlinWatchFaceService extends BaseWatchFaceService {
     @Override
     protected void setupWatchStyle(Engine engine) {
@@ -20,11 +18,5 @@ public class GremlinWatchFaceService extends BaseWatchFaceService {
                 R.drawable.gremlin_clock_frame,
         };
         loadBitmaps(resIds);
-        engine.setWatchFaceStyle(new WatchFaceStyle.Builder(this)
-                .setCardPeekMode(WatchFaceStyle.PEEK_OPACITY_MODE_TRANSLUCENT)
-                .setBackgroundVisibility(WatchFaceStyle
-                        .BACKGROUND_VISIBILITY_INTERRUPTIVE)
-                .setShowSystemUiTime(false)
-                .build());
     }
 }
