@@ -176,7 +176,7 @@ public class BaseWatchFaceService extends CanvasWatchFaceService {
         final int width = mBackgroundBitmap.getWidth();
         mHalfBitmapWidth = width / 2;
 
-        final float clipOffset = 0.1f;
+        final float clipOffset = 0.2f;
         mHandClip = new Rect(
                 (int)(mHalfBitmapWidth * (1.0f - clipOffset)),
                 (int)(mHalfBitmapWidth * (1.0f - clipOffset)),
@@ -193,13 +193,14 @@ public class BaseWatchFaceService extends CanvasWatchFaceService {
         canvas.restore();
     }
 
+    private float[] mAngles = new float[3];
     private void onDrawClockFace(Canvas canvas, boolean isAmbientMode) {
-        float[] angles = new float[3];
-        getHandAngles(angles);
 
-        final float hourAngle = angles[0] - 90f;
-        final float minAngle = angles[1] - 90f;
-        final float secAngle = angles[2] - 90f;
+        getHandAngles(mAngles);
+
+        final float hourAngle = mAngles[0] - 90f;
+        final float minAngle = mAngles[1] - 90f;
+        final float secAngle = mAngles[2] - 90f;
 
         {
             canvas.save();
